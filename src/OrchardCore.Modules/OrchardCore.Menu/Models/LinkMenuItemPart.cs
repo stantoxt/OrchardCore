@@ -1,4 +1,4 @@
-﻿using OrchardCore.ContentManagement;
+using OrchardCore.ContentManagement;
 
 namespace OrchardCore.Menu.Models
 {
@@ -10,8 +10,18 @@ namespace OrchardCore.Menu.Models
         public string Name { get; set; }
 
         /// <summary>
-        /// The url of the link to create.
+        /// If the Property IsCustomUrl is true, the url of the link to create.
         /// </summary>
         public string Url { get; set; }
+
+        /// <summary>
+        /// if the url is customized.
+        /// </summary>
+        public bool IsCustomUrl { get; set; }
+
+        /// <summary>
+        /// if the Property IsCustomUrl is false, the Attached ContentItem will be created.
+        /// </summary>
+        public ContentItem AttachedContentItem { get; set; }
     }
 }

@@ -1,2 +1,7 @@
-﻿{% assign link = Model.ContentItem.Content.LinkMenuItemPart %}
-<a class="nav-link js-scroll-trigger" href="{{ link.Url | href }}">{{ link.Name }}</a>
+{% assign link = Model.ContentItem.Content.LinkMenuItemPart %}
+{% if Model.ContentItem.Content.LinkMenuItem.ContentItemRoute.ContentItemIds.size > 0 %}
+  {% assign linkUrl = Content.ContentItemId[Model.ContentItem.Content.LinkMenuItem.ContentItemRoute.ContentItemIds.first].ContentItem.Content.AutoroutePart.Path %}
+{% else %}
+  {% assign linkUrl = Model.ContentItem.Content.LinkMenuItemPart.Url %}
+{% endif %}
+<a class="nav-link js-scroll-trigger" href="{{ linkUrl | href }}">{{ link.Name }}</a>

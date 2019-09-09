@@ -20,59 +20,63 @@
     var canAddMenuItem = Model.MenuPart.ContentItem.Id != 0;
     var index = 0;
 }
+<div class="row">
+    <div class="col-md-3">
+        <nav class="admin-toolbar">
+            <button type="button" @(canAddMenuItem ? null : "disabled=\"disabled\"") class="btn btn-primary" data-toggle="modal" data-target="#modalMenuItems">
+                @T["Add Menu Item"]
+            </button>
+        </nav>
 
-<nav class="admin-toolbar">
-    <button type="button" @(canAddMenuItem ? null : "disabled=\"disabled\"") class="btn btn-primary" data-toggle="modal" data-target="#modalMenuItems">
-        @T["Add Menu Item"]
-    </button>
-</nav>
+        <p>
+            <ol id="menu">
+                @foreach (var menuItem in Model.MenuPart.ContentItem.As<MenuItemsListPart>().MenuItems)
+                {
+                    dynamic menuItemShape = await ContentItemDisplayManager.BuildDisplayAsync(menuItem, updater, "Admin");
+                    menuItemShape.MenuPart = Model.MenuPart;
+                    menuItemShape.Index = index++;
+                    @await DisplayAsync(menuItemShape);
+                }
+            </ol>
+        </p>
 
-<p>
-    <ol id="menu">
-        @foreach (var menuItem in Model.MenuPart.ContentItem.As<MenuItemsListPart>().MenuItems)
-        {
-            dynamic menuItemShape = await ContentItemDisplayManager.BuildDisplayAsync(menuItem, updater, "Admin");
-            menuItemShape.MenuPart = Model.MenuPart;
-            menuItemShape.Index = index++;
-            @await DisplayAsync(menuItemShape);
-        }
-    </ol>
-</p>
-
-<!-- Modal -->
-<div class="modal fade" id="modalMenuItems" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">@T["Available Menu Items"]</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    @foreach (var type in menuItemContentTypes)
-                    {
-                        var menuItem = await ContentManager.NewAsync(type.Name);
-                        dynamic thumbnail = await ContentItemDisplayManager.BuildDisplayAsync(menuItem, updater, "Thumbnail");
-                        thumbnail.MenuItemType = type.Name;
-                        thumbnail.MenuItemTypeDisplayName = type.DisplayName;
-                        thumbnail.MenuContentItemId = Model.MenuPart.ContentItem.ContentItemId;
-                        <div class="col-sm-6">
-                            @await DisplayAsync(thumbnail)
+        <!-- Modal -->
+        <div class="modal fade" id="modalMenuItems" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">@T["Available Menu Items"]</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            @foreach (var type in menuItemContentTypes)
+                            {
+                                var menuItem = await ContentManager.NewAsync(type.Name);
+                                dynamic thumbnail = await ContentItemDisplayManager.BuildDisplayAsync(menuItem, updater, "Thumbnail");
+                                thumbnail.MenuItemType = type.Name;
+                                thumbnail.MenuItemTypeDisplayName = type.DisplayName;
+                                thumbnail.MenuContentItemId = Model.MenuPart.ContentItem.ContentItemId;
+                                <div class="col-sm-6">
+                                    @await DisplayAsync(thumbnail)
+                                </div>
+                            }
                         </div>
-                    }
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">@T["Cancel"]</button>
+                    </div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">@T["Cancel"]</button>
-            </div>
         </div>
-    </div>
-</div>
 
-<input asp-for="Hierarchy" type="hidden" value="" />
-<div id="msg-leave" style="display:none" data>@T["You have reordered the navigation."]</div>
+        <input asp-for="Hierarchy" type="hidden" value="" />
+        <div id="msg-leave" style="display:none" data>@T["You have reordered the navigation."]</div>
+    </div>
+    <div class="col-md-9"></div>
+</div>
 
 <script at="Foot">
     var menuItemId;

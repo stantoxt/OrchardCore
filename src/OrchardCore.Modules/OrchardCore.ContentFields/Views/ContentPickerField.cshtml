@@ -3,7 +3,7 @@
 @using OrchardCore.ContentManagement.Metadata.Models
 
 @inject OrchardCore.ContentManagement.IContentManager ContentManager
-
+@inject OrchardCore.ContentManagement.Metadata.IContentDefinitionManager ContentDefinitionManager
 @{
     var name = (Model.PartFieldDefinition.PartDefinition.Name + "-" + Model.PartFieldDefinition.Name).HtmlClassify();
     var contentItems = await ContentManager.GetAsync(Model.ContentItemIds);
@@ -15,6 +15,13 @@
     {
         foreach (var contentItem in contentItems)
         {
+            if (contentItem.Has("ListPart"))
+            {
+                foreach (var contentItemListPartType in ContentDefinitionManager.GetTypeDefinition(contentItem.ContentType).Parts.First(x => x.Name == "ListPart").Settings["ContainedContentTypes"].ToList())
+                {
+                    <span style="display:none;">@contentItemListPartType</span>
+                }
+            }
             <span class="value"><a display-for="@contentItem">@contentItem.DisplayText</a></span>
             if (contentItem != contentItems.Last())
             {
