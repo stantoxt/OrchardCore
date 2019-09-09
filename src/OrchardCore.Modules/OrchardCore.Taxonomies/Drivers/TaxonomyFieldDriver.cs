@@ -40,7 +40,6 @@ namespace OrchardCore.Taxonomies.Drivers
             })
             .Location("Content")
             .Location("SummaryAdmin", "");
-            ;
         }
 
         public override IDisplayResult Edit(TaxonomyField field, BuildFieldEditorContext context)
@@ -76,7 +75,7 @@ namespace OrchardCore.Taxonomies.Drivers
                 field.TaxonomyContentItemId = settings.TaxonomyContentItemId;
                 field.TermContentItemIds = model.TermEntries.Where(x => x.Selected).Select(x => x.ContentItemId).ToArray();
 
-                if (settings.Unique)
+                if (settings.Unique && !String.IsNullOrEmpty(model.UniqueValue))
                 {
                     field.TermContentItemIds = new[] { model.UniqueValue };
                 }
